@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Geocoder</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/dojo/1.6.1/dojo/dojo.xd.js"></script>
+    <script src="http://maps.google.com/maps/api/js?v=3.3&sensor=false"></script>
+    <script>
+        (function(){
+            dojo.ready(function(){
+                var btn = dojo.byId('geocode'),
+                    address = dojo.byId('address')
+                    results = dojo.byId('results');
+                
+                dojo.connect(btn, 'click', function(){
+                    results.innerHTML = '';
+                    
+                    var geocoder = new google.maps.Geocoder(),
+                        geoRequest = {
+                            address: dojo.attr(address, 'value').replace(/\n/g, '')
+                        };
+                    
+                    geocoder.geocode(geoRequest, function(response, status){
+                        if(status == 'OK'){
+                            var lat = response[0].geometry.location.lat(),
+                                lng = response[0].geometry.location.lng();
+                                
+                            results.innerHTML = "<p>Latitude: " + lat + " / Longitude: " + lng + "</p>";
+                        }else{
+                            results.innerHTML = "Error! Status code: " + status;
+                        }
+                    });
+                    
+                });
+            });
+        })();
+    </script>
+    <style>
+        label, textarea, input { display:block }
+        textarea { margin-bottom: 10px; }
+    </style>
+</head>
+
+<body>
+    <form>
+        <label for="address">Address:</label>
+        <textarea cols="30" rows="6" name="address" id="address">
+2 Buchanan Street,
+Glasgow,
+G1 3LB
+        </textarea>
+        <input type="button" id="geocode" value="Get it!" />
+    </form>
+    <div id="results"></div>
+</body>
+</html>
